@@ -474,3 +474,17 @@ function checkForNewBadge($user_id) {
     
     return null;
 }
+
+function awardPoints($user_id, $points, $action, $description) {
+    // Record points history
+    dbInsert('points_history', [
+        'user_id' => $user_id,
+        'points' => $points,
+        'action' => $action,
+        'description' => $description
+    ]);
+
+    // Update total user points
+    $updateStmt = "UPDATE user_points SET points = points + ? WHERE user_id = ?";
+    dbExecute($updateStmt, [$points, $user_id]);
+}
